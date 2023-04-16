@@ -50,10 +50,9 @@ le = LabelEncoder()
 train_data.iloc[:, -1] = le.fit_transform(train_data.iloc[:, -1])
 test_data.iloc[:, -1] = le.transform(test_data.iloc[:, -1])
 
-# Load the model and tokenizer from the checkpoint
-
-checkpoint_dir = "C:/Users/root/Documents/projects/jupyter/zero_results/checkpoint-84000"
-model = DistilBertForSequenceClassification.from_pretrained(checkpoint_dir)
+# # Load the model and tokenizer from the checkpoint
+# checkpoint_dir = "C:/Users/root/Documents/projects/jupyter/zero_results/checkpoint-84000"
+# model = DistilBertForSequenceClassification.from_pretrained(checkpoint_dir)
 
 # Create the tokenizer and the dataloaders
 tokenizer = DistilBertTokenizerFast.from_pretrained('distilbert-base-uncased') 
@@ -62,38 +61,13 @@ train_dataloader = create_data_loader(train_data.values, tokenizer, num_workers=
 test_dataloader = create_data_loader(test_data.values, tokenizer, num_workers=8, pin_memory=True)
 
 
-# # Prepare the model
-# model = DistilBertForSequenceClassification.from_pretrained('distilbert-base-uncased', num_labels=len(le.classes_))
+# Prepare the model
+model = DistilBertForSequenceClassification.from_pretrained('distilbert-base-uncased', num_labels=len(le.classes_))
 
-# # Set up training arguments
-# training_args = TrainingArguments(
-#     output_dir='./zero_results',
-#     num_train_epochs=3,
-#     per_device_train_batch_size=32,
-#     per_device_eval_batch_size=32,
-#     warmup_steps=500,
-#     weight_decay=0.01,
-#     logging_dir='./zero_logs',
-#     logging_steps=100,
-#     save_strategy='steps',
-#     save_steps=1000,
-#     evaluation_strategy='epoch',
-#     gradient_accumulation_steps=2,
-# )
-
-####################################################################################################
-
-
-
-# Calculate the remaining steps and epochs
-completed_steps = 84000
-total_steps = 106152
-remaining_steps = total_steps - completed_steps
-
-# Update the training arguments for start at 84000
+# Set up training arguments
 training_args = TrainingArguments(
     output_dir='./zero_results',
-    num_train_epochs=1, # Set to 1 epoch since we're resuming with remaining steps
+    num_train_epochs=3,
     per_device_train_batch_size=32,
     per_device_eval_batch_size=32,
     warmup_steps=500,
@@ -104,8 +78,33 @@ training_args = TrainingArguments(
     save_steps=1000,
     evaluation_strategy='epoch',
     gradient_accumulation_steps=2,
-    max_steps=remaining_steps, # Add the remaining steps
 )
+
+####################################################################################################
+
+# # Section only for starting from a checkpoint and need to calculate where to start
+
+# # Calculate the remaining steps and epochs
+# completed_steps = 84000
+# total_steps = 106152
+# remaining_steps = total_steps - completed_steps
+
+# # Update the training arguments for start at 84000
+# training_args = TrainingArguments(
+#     output_dir='./zero_results',
+#     num_train_epochs=1, # Set to 1 epoch since we're resuming with remaining steps
+#     per_device_train_batch_size=32,
+#     per_device_eval_batch_size=32,
+#     warmup_steps=500,
+#     weight_decay=0.01,
+#     logging_dir='./zero_logs',
+#     logging_steps=100,
+#     save_strategy='steps',
+#     save_steps=1000,
+#     evaluation_strategy='epoch',
+#     gradient_accumulation_steps=2,
+#     max_steps=remaining_steps, # Add the remaining steps
+# )
 ######################################################################################################
 # Define the Trainer
 trainer = Trainer(
