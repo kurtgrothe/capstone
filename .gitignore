@@ -2,6 +2,9 @@
 archive/
 zero_fine_tuned/pytorch_model.bin
 
+# Model Weights
+pytorch_model.bin
+
 # docker
 .dockerignore
 
