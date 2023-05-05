@@ -1,6 +1,9 @@
 # folders files for specific git instances
-archive/
 zero_fine_tuned/pytorch_model.bin
+data/MachineLearningCVE/
+data/median.pkl
+data/mean.pkl
+data/zero.pkl
 
 # Model Weights
 pytorch_model.bin
@@ -8,7 +11,7 @@ pytorch_model.bin
 # docker
 .dockerignore
 
-#Heroku
+# Heroku
 .slugignore
 
 # Jupyter
